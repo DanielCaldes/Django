@@ -3,11 +3,13 @@ from .models import User,FavouriteArtist,FavouriteTrack
 from .serializers import UserSerializer, FavouriteArtistSerializer, FavouriteTrackSerializer, FavouriteArtistDeleteSerializer, FavouriteTrackDeleteSerializer
 
 from django.http import JsonResponse
-from django.views import View
+from rest_framework.views import APIView
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from utils.spotify import SpotifyAPI
+
+from drf_yasg.utils import swagger_auto_schema
 
 # Genericos para crear y listar usuarios
 class UserListCreateView(generics.ListCreateAPIView):
@@ -21,7 +23,14 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 #End-point para añadir y borrar los artistas favoritos de un usuario
 @method_decorator(csrf_exempt, name='dispatch')
-class FavouriteArtistListCreateDestroyView(View):
+class FavouriteArtistListCreateDestroyView(APIView):
+    @swagger_auto_schema(
+        operation_description="Obtiene los artistas favoritos de un usuario",
+        responses={
+            200: 'Lista de artistas favoritos',
+            400: 'Error si no se proporciona el ID del usuario'
+        }
+    )
     def get(self, request, user_id):
         if not user_id:
             return JsonResponse({"error": "No se proporcionó el id del usuario"}, status=400)
@@ -31,16 +40,29 @@ class FavouriteArtistListCreateDestroyView(View):
 
         artists =[]
         for artist in favourite_artists:
-            data = spotify.search_artist_by_id(artist.artist_id)
-            if data:
-                artists.append(data)
-            else:
-                artist = FavouriteArtist.objects.get(artist_id=artist.artist_id, user_id=user_id)
-                artist.delete()
-                print("Se ha limpiado un id de usuario invalido")
+            try:
+                data = spotify.search_artist_by_id(artist.artist_id)              
+                if data:
+                    artists.append(data)
+            except Exception as e:
+                 #Comprobar un id erroneo, en ese caso se borra ese id de favoritos
+                if e.args[0].get('status_code') == 400:
+                    artist = FavouriteArtist.objects.get(artist_id=artist.artist_id, user_id=user_id)
+                    artist.delete()
+                    print(f"Se ha limpiado el id erroneo {artist.artist_id}")
+
 
         return JsonResponse({"favorite_artists": artists}, status=200)
     
+    @swagger_auto_schema(
+        operation_description="Agrega un artista a los favoritos de un usuario",
+        request_body=FavouriteArtistSerializer,
+        responses={
+            200: 'El artista se ha agregado correctamente',
+            404: 'El artista ya está en los favoritos del usuario',
+            400: 'Solicitud mal formada o inválida'
+        }
+    )
     def post(self, request, user_id):
         body = json.loads(request.body)
         artist_id = body.get("artist_id")
@@ -59,6 +81,14 @@ class FavouriteArtistListCreateDestroyView(View):
         favourite_artists.save()
         return JsonResponse({"message": f"El artista con id {artist_id} ha sido agregado a los favoritos del usuario con id {user_id}."})
 
+    @swagger_auto_schema(
+        operation_description="Elimina un artista de los favoritos de un usuario",
+        request_body=FavouriteArtistDeleteSerializer,
+        responses={
+            200: 'El artista se ha eliminado correctamente',
+            404: 'No se encontró el artista con el id proporcionado'
+        }
+    )
     def delete(self, request, user_id):
         body = json.loads(request.body)
         artist_id = body.get("artist_id")
@@ -80,7 +110,7 @@ class FavouriteArtistListCreateDestroyView(View):
         
 #End-point para añadir y borrar los artistas favoritos de un usuario
 @method_decorator(csrf_exempt, name='dispatch')
-class FavouriteTrackListCreateDestroyView(View):
+class FavouriteTrackListCreateDestroyView(APIView):
     def get(self, request, user_id):
         if not user_id:
             return JsonResponse({"error": "No se proporcionó el id del usuario"}, status=400)
@@ -92,13 +122,17 @@ class FavouriteTrackListCreateDestroyView(View):
         
         tracks =[]
         for track in favourite_tracks:
-            data = spotify.search_track_by_id(track.track_id)
-            if data:
-                tracks.append(data)
-            else:
-                invalid_track = FavouriteTrack.objects.get(track_id=track.track_id, user_id=user_id)
-                invalid_track.delete()
-                print("Se ha limpiado un id de cancion invalido")
+            try:
+                data = spotify.search_track_by_id(track.track_id)
+                if data:
+                    tracks.append(data)
+            except Exception as e:
+                 #Comprobar un id erroneo, en ese caso se borra ese id de favoritos
+                if e.args[0].get('status_code') == 400:
+                    data = None
+                    invalid_track = FavouriteTrack.objects.get(track_id=track.track_id, user_id=user_id)
+                    invalid_track.delete()
+                    print(f"Se ha limpiado el id erroneo {track.track_id}")
 
         return JsonResponse({"favorite_tracks": tracks}, status=200)
     
@@ -147,7 +181,7 @@ class FavouriteTrackListCreateDestroyView(View):
 
 #End-point para buscar un artista por nombre
 @method_decorator(csrf_exempt, name='dispatch')
-class SpotifyArtistView(View):
+class SpotifyArtistView(APIView):
     def get(self, request, artist_name):
         try:
             if not artist_name:
@@ -170,7 +204,7 @@ class SpotifyArtistView(View):
             return JsonResponse({"error": f"Error al procesar la petición: {str(e)}"}, status=500)
 
 @method_decorator(csrf_exempt, name='dispatch')
-class SpotifyTrackView(View):
+class SpotifyTrackView(APIView):
     def get(self, request, track_name, artist_name=""):
         try:
             if not track_name:
