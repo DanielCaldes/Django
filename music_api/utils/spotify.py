@@ -52,7 +52,7 @@ class SpotifyAPI:
                 "uri":artist['uri']
             }
         else:
-            raise None
+            return None
     
     def search_track_by_name(self, track_name : str, artist_name : Optional[str] = ""):
         url = "https://api.spotify.com/v1/search"
@@ -109,9 +109,9 @@ class SpotifyAPI:
                     return [{"artist_name": artist['artist_name'], "track_popularity": artist['track_popularity']}
                             for artist in artists_dict.values()]
             else:
-                raise None
+                return None
         else:
-            raise None
+            return None
 
     def search_track_by_id(self, track_id : str):
         url = f"https://api.spotify.com/v1/tracks/{track_id}"
@@ -135,5 +135,5 @@ class SpotifyAPI:
                 "artists":artists
             }
         else:
-            raise None
+            return None
 

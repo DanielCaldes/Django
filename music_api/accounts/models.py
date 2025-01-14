@@ -7,15 +7,15 @@ class User(models.Model):
         return self.username
 
 class FavouriteArtist(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favourite_artists")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favourite_artists")
     artist_id = models.CharField(max_length=100)
     
     class Meta:
-        unique_together = ('user_id', 'artist_id')
+        unique_together = ('user', 'artist_id')
 
 class FavouriteTrack(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favourite_tracks")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favourite_tracks")
     track_id = models.CharField(max_length=100)
 
     class Meta:
-        unique_together = ('user_id', 'track_id')
+        unique_together = ('user', 'track_id')

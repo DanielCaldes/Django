@@ -11,7 +11,15 @@ class FavouriteArtistSerializer(serializers.ModelSerializer):
         model = FavouriteArtist
         fields = ['user', 'artist_id']
 
+class FavouriteArtistDeleteSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    artist_id = serializers.CharField()
+
 class FavouriteTrackSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavouriteTrack
         fields = ['user', 'track_id']
+
+class FavouriteTrackDeleteSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    track_id = serializers.CharField()
