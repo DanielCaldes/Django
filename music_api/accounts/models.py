@@ -8,14 +8,14 @@ class User(models.Model):
 
 class FavouriteArtist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favourite_artists")
-    artist_id = models.CharField(max_length=100)
+    spotify_artist_id = models.CharField(max_length=100)
     
     class Meta:
-        unique_together = ('user', 'artist_id')
+        unique_together = ('user', 'spotify_artist_id')
 
 class FavouriteTrack(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favourite_tracks")
-    track_id = models.CharField(max_length=100)
+    spotify_track_id = models.CharField(max_length=100)
 
     class Meta:
-        unique_together = ('user', 'track_id')
+        unique_together = ('user', 'spotify_track_id')
