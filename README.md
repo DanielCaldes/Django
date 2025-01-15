@@ -30,8 +30,6 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 ### Requisitos previos
 - Python 3.8+
 - Django
-- Djangorestframework
-- Drf-yasg
 - Spotify API Client ID y Client Secret
 
 ### Instalación
@@ -68,8 +66,9 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
    python manage.py runserver
    ```
 
-2. Accede a la documentación interactiva de la API en Swagger:
-   http://127.0.0.1:8000/docs
+2. Accede a la documentación interactiva de la API en Swagger o Redoc:
+   http://127.0.0.1:8000/swagger/
+   http://127.0.0.1:8000/redoc/
 
 ## Endpoints
 
@@ -163,7 +162,7 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - **Respuesta**:
   ```json   
   {
-    "message": "El artista con id 0TnOYISbd1XYRBk9myaseg ha sido agregado a los favoritos del usuario con id 3."
+    "message": "The artist with id {spotify_artist_id} has been added to the favorites of the user with id {user_id}"
   }
   ```
 
@@ -230,7 +229,7 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - Respuesta:
   ```json
   {
-    "message": "La canción con id 11dFghVXANMlKmJXsNCbNl ha sido agregado a los favoritos del usuario con id 3."
+    "message": "The track with id {spotify_track_id} has been added to the favourites of the user with id {user_id}."
   }
   ```
 
