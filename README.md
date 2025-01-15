@@ -89,7 +89,7 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - **Respuesta**:
   ```json
   {
-    "id": 1
+    "username": "nombre"
   }
   ```
 
@@ -105,11 +105,9 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
   ```json  
   [
     {
-      "id": 1,
       "username": "nombre"
     },
     {
-      "id": 2,
       "username": "otro_nombre"
     }
   ]
@@ -132,7 +130,7 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - **Respuesta**:
   ```json  
   {
-    "message": "User updated successfully"
+    "message": "nuevo_nombre"
   }
   ```
 
@@ -146,9 +144,7 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - **Descripción**: Elimina un usuario de la base de datos por su ID.
 - **Respuesta**:
   ```json  
-  {
-    "message": "User with id {user_id} deleted successfully."
-  }
+  
   ```
 
 ### Preferencias musicales
@@ -167,7 +163,7 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - **Respuesta**:
   ```json   
   {
-    "message": "Insert successful!"
+    "message": "El artista con id 0TnOYISbd1XYRBk9myaseg ha sido agregado a los favoritos del usuario con id 3."
   }
   ```
 
@@ -202,13 +198,20 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - **Descripción**: Obtiene una lista de los artistas favoritos de un usuario por su ID.
 - **Respuesta**:
   ```json  
-  [
-    {
-      "name": "Pitbull",
-      "id": "0TnOYISbd1XYRBk9myaseg",
-      "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
-    }
-  ]
+  {
+    "favorite_artists": [
+      {
+        "id": "1EXjXQpDx2pROygh8zvHs4",
+        "name": "Melendi",
+        "uri": "spotify:artist:1EXjXQpDx2pROygh8zvHs4"
+      },
+      {
+        "id": "5BMgsAFg8rZQc3tqs5BB8G",
+        "name": "Mecano",
+        "uri": "spotify:artist:5BMgsAFg8rZQc3tqs5BB8G"
+      }
+    ]
+  }
   ```
 
   
@@ -227,7 +230,7 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - Respuesta:
   ```json
   {
-    "message": "Insert successful!"
+    "message": "La canción con id 11dFghVXANMlKmJXsNCbNl ha sido agregado a los favoritos del usuario con id 3."
   }
   ```
 
@@ -262,20 +265,22 @@ Este proyecto es una API REST construida con **Django** que permite a los usuari
 - **Descripción**: Obtiene una lista de las canciones favoritas de un usuario por su ID.
 - **Respuesta**:
   ```json  
-  [
-    {
-      "name": "Cut To The Feeling",
-      "id": "11dFghVXANMlKmJXsNCbNl",
-      "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl",
-      "artists": [
-        {
-          "name": "Carly Rae Jepsen",
-          "id": "6sFIWsNpZYqfjUpaCgueju",
-          "uri": "spotify:artist:6sFIWsNpZYqfjUpaCgueju"
-        }
-      ]
-    }
-  ]
+  {
+    "favorite_tracks": [
+      {
+        "id": "11dFghVXANMlKmJXsNCbNl",
+        "name": "Cut To The Feeling",
+        "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl",
+        "artists": [
+          {
+            "name": "Carly Rae Jepsen",
+            "id": "6sFIWsNpZYqfjUpaCgueju",
+            "uri": "spotify:artist:6sFIWsNpZYqfjUpaCgueju"
+          }
+        ]
+      }
+    ]
+  }
   ```
 
 
