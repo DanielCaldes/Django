@@ -72,7 +72,7 @@ class FavouriteArtistListCreateDestroyView(APIView):
             except Exception as e:
                 # Check for an Invalid ID, in Which Case Remove It from Favorites
                 if e.args[0].get('status_code') == 400:
-                    artist = FavouriteArtist.objects.get(artist_id=artist.spotify_artist_id, user_id=user_id)
+                    artist = FavouriteArtist.objects.get(spotify_artist_id=artist.spotify_artist_id, user_id=user_id)
                     artist.delete()
                     print(f"The invalid id has been cleared {artist.spotify_artist_id}")
 
@@ -155,8 +155,6 @@ class FavouriteTrackListCreateDestroyView(APIView):
     def get(self, request, user_id):
         favourite_tracks = FavouriteTrack.objects.filter(user_id=user_id)
         spotify = SpotifyAPI()
-
-        tracks = [spotify.search_track_by_id(track.spotify_track_id) for track in favourite_tracks]
         
         tracks =[]
         for track in favourite_tracks:
